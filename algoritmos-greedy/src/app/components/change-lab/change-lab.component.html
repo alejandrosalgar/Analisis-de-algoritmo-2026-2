@@ -1,0 +1,139 @@
+<div class="app">
+  <header class="top">
+    <div>
+      <p class="top__kicker">Análisis de algoritmos · ITM</p>
+      <h1>El vuelto</h1>
+      <p class="top__lede">
+        Problema: devolver el cambio al cliente usando las menos piezas posible.
+        El algoritmo greedy (el de una cajera) no prueba combinaciones: siempre
+        entrega el billete o moneda más grande que todavía quepa.
+      </p>
+    </div>
+  </header>
+
+  <section class="explain">
+    <article>
+      <h2>Qué hay que resolver</h2>
+      <p>{{ hint() }}</p>
+      @if (story(); as sale) {
+        <ul class="ticket">
+          <li><span>Compra</span><b>${{ formatMoney(sale.price ?? 0) }}</b></li>
+          <li><span>Pagó</span><b>${{ formatMoney(sale.paid ?? 0) }}</b></li>
+          <li><span>Vuelto</span><b>${{ formatMoney(sale.amount) }}</b></li>
+        </ul>
+      }
+    </article>
+    <article>
+      <h2>Qué está haciendo la app</h2>
+      <p>
+        Simula a la cajera. Mira el dinero de mayor a menor y pregunta:
+        «¿cuántos de este valor caben en lo que aún debo?». Si caben, se los da
+        y resta. Si no, pasa al siguiente. Pulsa <strong>Paso</strong> una vez
+        para ver la siguiente decisión.
+      </p>
+    </article>
+  </section>
+
+  <div class="pills" role="tablist" aria-label="Ejemplos">
+    @for (preset of presets; track preset.id) {
+      <button
+        type="button"
+        class="pill"
+        [class.pill--on]="presetId() === preset.id"
+        (click)="loadPreset(preset.id)"
+      >
+        {{ preset.label }}
+      </button>
+    }
+  </div>
+
+  <div class="stage">
+    <section class="hero">
+      <p class="hero__label">Todavía le debes al cliente</p>
+      <p class="hero__amount" [class.hero__amount--done]="step().remaining === 0 && step().kind === 'done'">
+        <small>$</small>{{ formatMoney(step().remaining) }}
+      </p>
+      <div class="meter">
+        <div class="bar" [style.--fill]="filled()"></div>
+        <span>
+          Ya le diste ${{ formatMoney(step().original - step().remaining) }}
+          de ${{ formatMoney(step().original) }}
+        </span>
+      </div>
+
+      <p class="coins__label">Billetes y monedas de la caja</p>
+      <div class="coins" aria-label="Billetes y monedas">
+        @for (coin of step().ordered.length ? step().ordered : coins(); track coin) {
+          <button
+            type="button"
+            class="coin"
+            [attr.data-state]="coinState(coin)"
+            (click)="toggleCoin(coin)"
+            [attr.title]="'Quitar o dejar $' + formatMoney(coin) + ' en la caja'"
+          >
+            <strong>${{ formatMoney(coin) }}</strong>
+            <em>{{ coinCaption(coin) }}</em>
+          </button>
+        }
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="side__progress" [style.--p]="progress()"></div>
+      <p class="side__kicker">Ahora · {{ kindLabel[step().kind] }} · {{ stepIndex() + 1 }}/{{ steps().length }}</p>
+      <h2>{{ step().title }}</h2>
+      <p>{{ step().detail }}</p>
+
+      @if (isSuboptimal()) {
+        <p class="banner">
+          Con la regla «siempre la más grande» usó {{ step().greedyCoins }} piezas.
+          Se podía con {{ step().optimalCoins }} (dos fichas de 3).
+          En Café, Pasaje o Mercado esa regla sí acierta.
+        </p>
+      }
+
+      <h3>Lo que ya le diste</h3>
+      @if (receipt().length === 0) {
+        <p class="side__empty">Todavía nada. Pulsa Paso: verás cómo va eligiendo cada pieza.</p>
+      } @else {
+        <ul class="receipt">
+          @for (row of receipt(); track row.coin) {
+            <li>
+              <span>{{ row.count }} de ${{ formatMoney(row.coin) }}</span>
+              <b>${{ formatMoney(row.total) }}</b>
+            </li>
+          }
+        </ul>
+        <p class="side__total">{{ step().greedyCoins }} pieza{{ step().greedyCoins === 1 ? '' : 's' }} en la mano del cliente</p>
+      }
+
+      <div class="play">
+        <button type="button" class="btn" (click)="prev()" [disabled]="stepIndex() === 0">Atrás</button>
+        @if (playing()) {
+          <button type="button" class="btn btn--main" (click)="pause()">Pausa</button>
+        } @else {
+          <button type="button" class="btn btn--main" (click)="play()">Reproducir</button>
+        }
+        <button type="button" class="btn btn--main" (click)="next()" [disabled]="stepIndex() >= steps().length - 1">Paso</button>
+        <button type="button" class="btn" (click)="reset()">Desde el inicio</button>
+      </div>
+      <label class="speed">
+        Velocidad
+        <input type="range" min="400" max="1800" step="100" [value]="speedMs()" (input)="setSpeed($any($event.target).value)" />
+      </label>
+    </aside>
+  </div>
+
+  <form class="dock" (submit)="$event.preventDefault(); applyAmount()">
+    <label>
+      Otro vuelto (sin historia de compra)
+      <input type="number" name="amount" min="0" max="999999" [(ngModel)]="draftAmount" />
+    </label>
+    <button type="submit" class="btn btn--main">Devolver este monto</button>
+    <label>
+      Agregar billete o moneda
+      <input type="number" name="coin" min="1" [(ngModel)]="draftCoin" />
+    </label>
+    <button type="button" class="btn" (click)="addCoin()">Ponerla en la caja</button>
+  </form>
+</div>
