@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>La cola de urgencias · Heap Sort · ITM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="deck">
+      <header class="bar">
+        <p class="bar__kicker">Análisis de algoritmos · ITM · 2026-2</p>
+        <p class="bar__title">Heap Sort · la cola de urgencias</p>
+        <div class="bar__nav">
+          <a href="../index.html">Piezas</a>
+          <button type="button" id="prev" aria-label="Anterior">←</button>
+          <span id="pos">1 / 12</span>
+          <button type="button" id="next" aria-label="Siguiente">→</button>
+        </div>
+      </header>
+      <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+      <section class="slide is-on" data-slide>
+        <p class="kicker">Presentación · problema, algoritmo, solución</p>
+        <h1>La cola de urgencias</h1>
+        <p class="lede">
+          Un sábado en un hospital de Medellín. Ocho pacientes ya están en sala.
+          Hay que producir el orden de atención: primero el riesgo clínico,
+          después quien lleva más rato. El algoritmo es Heap Sort.
+        </p>
+        <ul class="facts">
+          <li><span>Problema</span><b>Triaje de un lote en espera</b></li>
+          <li><span>Algoritmo</span><b>Heap Sort (max-heap)</b></li>
+          <li><span>Cota</span><b>Θ(n log n) tiempo, O(1) extra</b></li>
+        </ul>
+        <p class="hint">Flechas o espacio para avanzar. En la diapositiva del heap, Paso recorre el algoritmo.</p>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">1 · El problema real</p>
+        <h2>No es una fila de panadería</h2>
+        <div class="split">
+          <div>
+            <p>
+              FIFO (llegada) es justo para un turno de banco. En urgencias es
+              peligroso: un dolor torácico a las 21:04 no puede esperar detrás
+              de un tobillo hinchado que llegó a las 20:51.
+            </p>
+            <p>
+              El triaje pinta un color (rojo, naranja, amarillo, verde) y anota
+              la hora. La pregunta del lote: <em>si nadie más entra, ¿en qué
+              orden se atienden estos ocho?</em>
+            </p>
+            <p class="note">
+              En producción la sala sigue recibiendo gente: eso es una cola de
+              prioridad (insertar y extraer). Heap Sort es la versión
+              <em>offline</em> del mismo invariante: la raíz es siempre el más urgente.
+            </p>
+          </div>
+          <aside>
+            <h3>Objetivo</h3>
+            <p>Una permutación de los 8 que respete la política clínica.</p>
+            <h3>No objetivo</h3>
+            <p>Minimizar espera promedio, ni «el de mayor edad primero», ni el orden en que se sentaron.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">2 · Por qué es un ordenamiento</p>
+        <h2>Clave mal hecha = política mal hecha</h2>
+        <p>
+          Ordenar no inventa datos. Reescribe el orden según una clave. Si la
+          clave es solo el color, Heap Sort —que <strong>no es estable</strong>—
+          puede invertir a dos amarillos. El desempate de llegada tiene que ir
+          <em>dentro</em> del número.
+        </p>
+        <pre>score(rojo)=4  naranja=3  amarillo=2  verde=1
+clave = score × 10 000 − minutos desde las 20:00
+
+Mayor clave = se atiende primero.</pre>
+        <p>
+          Marta (rojo, 21:04) gana a todo verde, aunque Juan (verde) haya
+          llegado antes. Dos naranjas: gana quien lleva más minutos en sala.
+        </p>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">3 · La instancia</p>
+        <h2>Ocho pacientes, 20:51–21:18</h2>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Paciente</th>
+              <th>Motivo</th>
+              <th>Color</th>
+              <th>Llegada</th>
+              <th>Clave</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-pacientes"></tbody>
+        </table>
+        <p class="note">
+          Bruto: 8! = 40 320 órdenes. Heap Sort hace Θ(n log n) ≈ 8 · 3
+          sift-downs de costo logarítmico, más un build-heap Θ(n).
+        </p>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">4 · El algoritmo</p>
+        <h2>Heap Sort en dos actos</h2>
+        <ol class="steps">
+          <li>
+            <b>Construir el max-heap</b>
+            <span>Desde el último padre ⌊n/2⌋−1 hasta la raíz, bajar el nodo que rompa el invariante. Eso es Θ(n), no Θ(n log n): los subárboles de abajo son chicos.</span>
+          </li>
+          <li>
+            <b>Extraer n veces</b>
+            <span>La raíz es el siguiente a atender. Se intercambia con el último, se achica el heap, sift-down. Cada extracción O(log n). Total Θ(n log n).</span>
+          </li>
+        </ol>
+        <pre>invariante: a[i] ≥ a[2i+1] y a[i] ≥ a[2i+2]
+(hijos más urgentes no pueden superar al padre)</pre>
+      </section>
+
+      <section class="slide slide--lab" data-slide>
+        <p class="kicker">5 · Solución, paso a paso</p>
+        <h2>El heap en la pizarra</h2>
+        <p class="caption" id="heap-caption">Pulsa Paso: primero se construye el heap; después se extrae el más urgente.</p>
+        <div class="lab">
+          <div>
+            <div class="tree" id="tree"></div>
+            <div class="lab-controls">
+              <button type="button" class="btn btn--accent" id="heap-step">Paso</button>
+              <button type="button" class="btn" id="heap-reset">Reiniciar</button>
+              <span id="heap-kind">build-heap</span>
+            </div>
+          </div>
+          <aside>
+            <h3>Ya atendidos</h3>
+            <ol class="attended" id="attended"></ol>
+            <p class="mini" id="heap-stats">Comparaciones de sift: 0</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">6 · La solución</p>
+        <h2>Orden de atención</h2>
+        <ol class="solution" id="solucion"></ol>
+        <p>
+          Marta (rojo) entra primero. Los dos naranjas después, el de las 20:58
+          antes que el de las 21:11. Los verdes, al final, en orden de llegada.
+          Eso es exactamente extraer el máximo n veces.
+        </p>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">7 · Complejidad</p>
+        <h2>Qué se puede afirmar en tablero</h2>
+        <table>
+          <thead>
+            <tr><th></th><th>Tiempo</th><th>Espacio extra</th><th>Estable</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>build-heap</td><td>Θ(n)</td><td>O(1)</td><td>—</td></tr>
+            <tr><td>n extracciones</td><td>Θ(n log n)</td><td>O(1)</td><td>—</td></tr>
+            <tr><td>Heap Sort</td><td>Θ(n log n) peor y mejor</td><td>O(1)</td><td>No</td></tr>
+            <tr><td>Merge Sort</td><td>Θ(n log n)</td><td>Θ(n)</td><td>Sí</td></tr>
+            <tr><td>Quick Sort</td><td>promedio Θ(n log n), peor Θ(n²)</td><td>O(log n) pila</td><td>Típico: no</td></tr>
+          </tbody>
+        </table>
+        <p class="note">
+          La cota inferior de comparar es Ω(n log n). Heap Sort la alcanza
+          siempre. No hay milagro comparativo más barato para el peor caso.
+        </p>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">8 · Por qué no otro sort</p>
+        <h2>El algoritmo sigue a la operación</h2>
+        <div class="cards3">
+          <article>
+            <h3>Insertion</h3>
+            <p>Perfecto para meter <em>un</em> paciente nuevo en una lista ya ordenada, O(n). Con el caos de las 21:00 y n grande, Θ(n²) en el peor caso.</p>
+          </article>
+          <article>
+            <h3>Merge</h3>
+            <p>Misma cota, y estable. Gana si el lote se ordena de una vez y el empate no cabe en la clave. No deja un heap para las llegadas siguientes.</p>
+          </article>
+          <article>
+            <h3>Quick</h3>
+            <p>Rápido en promedio. Un pivote sistemáticamente extremo (sala ya ordenada por llegada) degenera a Θ(n²). Urgencias no se presta a esa apuesta.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">9 · De la pizarra al software</p>
+        <h2>El heap no se queda en el hospital</h2>
+        <ul class="plain">
+          <li><strong>Tickets y PagerDuty.</strong> Extraer el incidente de mayor severidad: cola de prioridad.</li>
+          <li><strong>Dijkstra.</strong> El vértice de menor distancia tentativa sale de un heap. El greedy del otro laboratorio vive de esto.</li>
+          <li><strong>Schedulers.</strong> El siguiente job (CI, CPU, runner) es extract-min/max, no un sort completo del backlog en cada tick.</li>
+          <li><strong>Top-k.</strong> «Los 10 pacientes más graves de 400» se hace con un heap de tamaño 10, O(n log k), no ordenando los 400 si solo hace falta el recorte.</li>
+        </ul>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">10 · Lo que hay que llevarse</p>
+        <h2>Tres frases para el parcial</h2>
+        <ol class="take">
+          <li>La <b>clave</b> es la política. Heap Sort solo la ejecuta. Si el desempate importa y el sort no es estable, el desempate va en el número.</li>
+          <li>Heap Sort es <b>Θ(n log n)</b> siempre e in-place. El build es Θ(n); las extracciones dominan.</li>
+          <li>Sala en línea ≠ lote: en línea se usa el <b>heap vivo</b> (insert + extract). Heap Sort es ordenar el lote de una vez con el mismo invariante.</li>
+        </ol>
+      </section>
+
+      <section class="slide" data-slide>
+        <p class="kicker">Cierre</p>
+        <h1>Siguiente</h1>
+        <p class="lede">
+          En el laboratorio de despacho la clave es otra (minutos que restan,
+          barrio, valor) y el algoritmo es Merge Sort, porque el empate de
+          barrio pide estabilidad. Mismo oficio: elegir política, elegir cota.
+        </p>
+        <p><a class="go" href="../desarrollo/index.html">Abrir Despacho a tiempo →</a></p>
+        <p class="hint">Guía: README-ORDENAMIENTO.md · Flechas para volver</p>
+      </section>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

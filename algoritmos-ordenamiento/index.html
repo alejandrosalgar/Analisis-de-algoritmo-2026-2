@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Algoritmos de ordenamiento · ITM 2026-2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #07080b;
+        --panel: #111318;
+        --ink: #f4f6fa;
+        --muted: #8d95a8;
+        --line: #2a3040;
+        --accent: #c8ff4d;
+        --accent-ink: #12150a;
+        --display: "Bricolage Grotesque", "Segoe UI", sans-serif;
+        --sans: "Figtree", "Segoe UI", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+      }
+      .wrap {
+        width: min(920px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2.5rem 0 4rem;
+      }
+      .kicker {
+        margin: 0 0 0.4rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      h1 {
+        font-family: var(--display);
+        font-weight: 600;
+        letter-spacing: -0.04em;
+        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        line-height: 0.95;
+        margin: 0;
+      }
+      .lede {
+        color: var(--muted);
+        max-width: 38rem;
+        margin: 0.8rem 0 0;
+        line-height: 1.5;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+      a.card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 1.25rem;
+        padding: 1.25rem 1.3rem 1.35rem;
+        min-height: 14rem;
+      }
+      a.card:hover {
+        border-color: var(--accent);
+      }
+      a.card h2 {
+        font-family: var(--display);
+        font-size: 1.45rem;
+        letter-spacing: -0.03em;
+        margin: 0.35rem 0 0;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent-ink);
+        background: var(--accent);
+        padding: 0.2rem 0.45rem;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+      a.card p {
+        color: var(--muted);
+        margin: 0.7rem 0 0;
+        line-height: 1.45;
+      }
+      .foot {
+        margin-top: 1.5rem;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .foot a {
+        color: var(--accent);
+      }
+      @media (max-width: 720px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="kicker">Análisis de algoritmos · ITM · 2026-2</p>
+      <h1>Algoritmos de ordenamiento</h1>
+      <p class="lede">
+        Dos piezas para clase. Un laboratorio resuelve el orden de salida de un
+        fogón en hora pico. Una presentación cuenta el triaje de urgencias con
+        un heap. Guía escrita:
+        <a href="../README-ORDENAMIENTO.md" style="color: var(--accent)"
+          >README-ORDENAMIENTO.md</a
+        >.
+      </p>
+      <div class="grid">
+        <a class="card" href="desarrollo/index.html">
+          <span class="tag">Desarrollo</span>
+          <h2>Despacho a tiempo</h2>
+          <p>
+            Merge Sort estable. Clave: minutos que restan, barrio, valor. Paso a
+            paso se ve la división y la fusión de los pedidos.
+          </p>
+        </a>
+        <a class="card" href="presentacion/index.html">
+          <span class="tag">Presentación</span>
+          <h2>La cola de urgencias</h2>
+          <p>
+            Problema, algoritmo y solución. Heap Sort sobre ocho pacientes:
+            construir el heap y extraer siempre al más grave.
+          </p>
+        </a>
+      </div>
+      <p class="foot">
+        Sin instalación: HTML, CSS y JS. En la presentación usa las flechas o
+        el espacio.
+      </p>
+    </div>
+  </body>
+</html>

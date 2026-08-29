@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Despacho a tiempo · Merge Sort · ITM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="top">
+        <div>
+          <p class="top__kicker">Análisis de algoritmos · ITM · ordenamiento</p>
+          <h1>Despacho a tiempo</h1>
+          <p class="top__lede">
+            Problema: el Fogón del Centro promete 35–45 minutos. Hay que decidir
+            el orden de salida para incumplir el menor número de promesas.
+            El algoritmo es Merge Sort, estable, con clave compuesta.
+          </p>
+        </div>
+        <a class="back" href="../index.html">Todas las piezas</a>
+      </header>
+
+      <section class="explain">
+        <article>
+          <h2>Qué hay que resolver</h2>
+          <p>
+            Cada bolsa tiene un reloj: minutos de promesa menos lo ya transcurrido.
+            Negativo = ya tarde. La secuencia de salida debe ir de más urgente a
+            más holgado. Si empatan, se agrupa el <strong>barrio</strong>. Si
+            siguen empatando, sale primero el de <strong>mayor valor</strong>.
+          </p>
+          <ul class="ticket">
+            <li><span>Clave 1</span><b>resta creciente</b></li>
+            <li><span>Clave 2</span><b>barrio (A–Z)</b></li>
+            <li><span>Clave 3</span><b>valor decreciente</b></li>
+          </ul>
+        </article>
+        <article>
+          <h2>Qué está haciendo la app</h2>
+          <p>
+            No llama al <code>sort</code> del lenguaje para el relato de clase.
+            Divide el lote a la mitad hasta corridas de 1 y fusiona con dos
+            índices: siempre sale el menor según la clave. Pulsa
+            <strong>Paso</strong> para la siguiente comparación.
+            En <em>Pedido nuevo</em> la cola ya está ordenada: Insertion en
+            <code>O(n)</code> en vez de reordenar en <code>Θ(n log n)</code>.
+          </p>
+        </article>
+      </section>
+
+      <div class="pills" role="tablist" aria-label="Escenarios">
+        <button type="button" class="pill pill--on" data-preset="pico">Hora pico</button>
+        <button type="button" class="pill" data-preset="empates">Empates</button>
+        <button type="button" class="pill" data-preset="nuevo">Pedido nuevo</button>
+      </div>
+
+      <section class="hero">
+        <p class="hero__label" id="caption">Listo para dividir el lote.</p>
+        <div class="stats" aria-label="Métricas">
+          <div>
+            <span>Comparaciones</span>
+            <b id="stat-cmp">0</b>
+          </div>
+          <div>
+            <span>Ya tarde</span>
+            <b id="stat-late">—</b>
+          </div>
+          <div>
+            <span>Sale primero</span>
+            <b id="stat-first">—</b>
+          </div>
+          <div>
+            <span>Cota</span>
+            <b id="stat-bound">Θ(n log n)</b>
+          </div>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button type="button" class="btn btn--accent" id="btn-play">Reproducir</button>
+        <button type="button" class="btn" id="btn-step">Paso</button>
+        <button type="button" class="btn" id="btn-reset">Reiniciar</button>
+        <label class="speed">
+          Ritmo
+          <select id="speed">
+            <option value="1400">Lento</option>
+            <option value="850" selected>Normal</option>
+            <option value="350">Rápido</option>
+          </select>
+        </label>
+      </div>
+
+      <section class="stage" aria-live="polite">
+        <div class="lane">
+          <h3>Izquierda</h3>
+          <div class="cards" id="left"></div>
+        </div>
+        <div class="lane">
+          <h3>Derecha</h3>
+          <div class="cards" id="right"></div>
+        </div>
+        <div class="lane lane--out">
+          <h3>Corrida fusionada / orden de despacho</h3>
+          <div class="cards" id="out"></div>
+        </div>
+      </section>
+
+      <section class="board">
+        <h3>Lote en cocina <span id="n-label"></span></h3>
+        <div class="cards cards--board" id="board"></div>
+      </section>
+
+      <section class="theory">
+        <article>
+          <h2>Por qué Merge Sort</h2>
+          <p>
+            Hora pico pide peor caso <code>Θ(n log n)</code>, no un Quick que
+            se vaya a <code>Θ(n²)</code> si el pivote cae mal. El empate de
+            minutos tiene significado (barrio, valor, llegada): Merge es
+            <strong>estable</strong>. Con 12 bolsas, enumerar <code>12!</code>
+            permutaciones (479 millones) no corre en clase; fusionar sí.
+          </p>
+        </article>
+        <article>
+          <h2>Complejidad que estás viendo</h2>
+          <p>
+            Cada fusión de <code>k</code> elementos hace menos de <code>k</code>
+            comparaciones. Hay <code>⌈log₂ n⌉</code> niveles. Suma
+            <code>Θ(n log n)</code>. Memoria extra <code>Θ(n)</code> para las
+            corridas. Insertion del pedido nuevo: una pasada
+            <code>O(n)</code>, adaptativa.
+          </p>
+        </article>
+      </section>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
