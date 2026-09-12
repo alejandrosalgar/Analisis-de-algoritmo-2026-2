@@ -1,11 +1,12 @@
 # Análisis de algoritmos · 2026-2
 
-Material del curso (ITM). El hilo de esta guía es: **primero complejidad**, después **algoritmos greedy** y **algoritmos de ordenamiento**.
+Material del curso (ITM). El hilo de esta guía es: **primero complejidad**, después **algoritmos greedy**, **algoritmos de ordenamiento** y **grafos**.
 
 | Tema | Guía | Para proyectar en clase |
 | --- | --- | --- |
 | Complejidad y greedy | [`algoritmos-greedy/README.md`](algoritmos-greedy/README.md) | Laboratorio Angular del vuelto |
 | Ordenamiento | [`README-ORDENAMIENTO.md`](README-ORDENAMIENTO.md) | [Despacho (Merge Sort)](algoritmos-ordenamiento/desarrollo/index.html) y [triaje (Heap Sort)](algoritmos-ordenamiento/presentacion/index.html) |
+| Grafos | [`README-GRAFOS.md`](README-GRAFOS.md) | Historia de Euler, modelo, algoritmos y ejercicios a mano |
 
 ```bash
 cd algoritmos-greedy
@@ -16,6 +17,8 @@ npm start
 Abre [http://localhost:4200](http://localhost:4200).
 
 Las piezas de **ordenamiento** no usan Node: abre [`algoritmos-ordenamiento/index.html`](algoritmos-ordenamiento/index.html) en el navegador (o Live Server).
+
+La guía de **grafos** es Markdown para clase y pizarrón: [`README-GRAFOS.md`](README-GRAFOS.md) (Euler, modelo, algoritmos y ejercicios a mano).
 
 ---
 
