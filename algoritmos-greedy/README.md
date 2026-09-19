@@ -193,7 +193,7 @@ En la app, el ejemplo *Mercado* tiene un vuelto de 23.700: el bruto explora comb
 
 **Greedy fraccionario (mayor densidad).** Llenar café (10), cacao (20) y `20/30` del azúcar. Valor `60 + 100 + 80 = 240`. Complejidad `O(n log n)` por ordenar densidades, luego `O(n)` para llenar. Con `n = 40` objetos el bruto 0/1 ya es un billón de subconjuntos; el greedy fraccionario ordena 40 densidades.
 
-La mochila **0/1** (no se parte) **no** se resuelve con este greedy: ahí el brute es `O(n 2^n)` y el algoritmo exacto razonable es DP `O(nW)`.
+La mochila **0/1** (no se parte) **no** se resuelve con este greedy: ahí el brute es `O(n 2^n)` y el algoritmo exacto razonable es [programación dinámica](../README-DP.md) `O(nW)`.
 
 ### 3.3 Cambio de monedas (sistema canónico)
 
@@ -304,9 +304,9 @@ Sea `a` la actividad de menor fin. Sea `OPT` un óptimo. Si `a ∈ OPT`, listo. 
 | --- | --- | --- | --- |
 | Selección de actividades / interval scheduling | Menor hora de fin | Sí | `O(n log n)` |
 | Mochila fraccionaria | Mayor valor / peso | Sí | `O(n log n)` |
-| Mochila 0/1 | El mismo | **No** | DP `O(nW)` |
+| Mochila 0/1 | El mismo | **No** | [DP](../README-DP.md) `O(nW)` |
 | Cambio de monedas (denominaciones canónicas: 1, 5, 10, 25) | Mayor denominación ≤ resto | Sí en sistemas canónicos | `O(k)` |
-| Cambio de monedas genérico | El mismo | **No** | DP |
+| Cambio de monedas genérico | El mismo | **No** | [DP](../README-DP.md) |
 | Huffman | Fusionar los dos símbolos de menor frecuencia | Sí (código óptimo por símbolo) | `O(n log n)` |
 | Kruskal (MST) | Arista de menor peso que no forma ciclo | Sí | `O(m log m)` |
 | Prim (MST) | Vértice más barato de conectar al árbol | Sí | `O(m + n log n)` con heap |

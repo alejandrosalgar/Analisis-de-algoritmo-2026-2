@@ -1,12 +1,13 @@
 # Análisis de algoritmos · 2026-2
 
-Material del curso (ITM). El hilo de esta guía es: **primero complejidad**, después **algoritmos greedy**, **algoritmos de ordenamiento** y **grafos**.
+Material del curso (ITM). El hilo de esta guía es: **primero complejidad**, después **algoritmos greedy**, **algoritmos de ordenamiento**, **grafos** y **programación dinámica**.
 
 | Tema | Guía | Para proyectar en clase |
 | --- | --- | --- |
 | Complejidad y greedy | [`algoritmos-greedy/README.md`](algoritmos-greedy/README.md) | Laboratorio Angular del vuelto |
 | Ordenamiento | [`README-ORDENAMIENTO.md`](README-ORDENAMIENTO.md) | [Despacho (Merge Sort)](algoritmos-ordenamiento/desarrollo/index.html) y [triaje (Heap Sort)](algoritmos-ordenamiento/presentacion/index.html) |
 | Grafos | [`README-GRAFOS.md`](README-GRAFOS.md) | Historia de Euler, modelo, algoritmos y ejercicios a mano |
+| Programación dinámica | [`README-DP.md`](README-DP.md) | Estado, recurrencia, tabla y ejercicios a mano (mochila, vuelto, edición) |
 
 ```bash
 cd algoritmos-greedy
@@ -19,6 +20,8 @@ Abre [http://localhost:4200](http://localhost:4200).
 Las piezas de **ordenamiento** no usan Node: abre [`algoritmos-ordenamiento/index.html`](algoritmos-ordenamiento/index.html) en el navegador (o Live Server).
 
 La guía de **grafos** es Markdown para clase y pizarrón: [`README-GRAFOS.md`](README-GRAFOS.md) (Euler, modelo, algoritmos y ejercicios a mano).
+
+La guía de **programación dinámica** es Markdown para clase y pizarrón: [`README-DP.md`](README-DP.md) (Bellman, estado y recurrencia, mochila 0/1, vuelto no canónico, edición).
 
 ---
 
@@ -89,7 +92,7 @@ Capacidad 50. Café 60/10 (densidad 6), cacao 100/20 (5), azúcar 120/30 (4).
 - **Bruto 0/1:** 8 subconjuntos, mejor valor entero 220 (cacao+azúcar). `O(n 2^n)`.
 - **Greedy (se puede partir):** café + cacao + 2/3 del azúcar = **240**. `O(n log n)`.
 
-Si los frascos no se abren (mochila 0/1), este greedy **deja de ser exacto**; ahí el exacto razonable es DP `O(nW)`.
+Si los frascos no se abren (mochila 0/1), este greedy **deja de ser exacto**; ahí el exacto razonable es [programación dinámica](README-DP.md) `O(nW)`.
 
 ### Cambio de monedas (COP)
 

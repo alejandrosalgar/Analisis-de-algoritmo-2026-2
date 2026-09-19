@@ -2,7 +2,7 @@
 
 Material del curso (ITM). Un grafo no es un dibujo de circulitos: es el modelo para **relaciones**. Greedy ya usó esa idea sin detenerse en ella (Kruskal, Dijkstra). Esta guía la pone en el centro: de dónde salió, qué es, para qué sirve, cuáles algoritmos hay que saber y cómo se resuelven a mano dos o tres problemas típicos.
 
-Curso: **Análisis de algoritmos · ITM · 2026-2**.
+Curso: **Análisis de algoritmos · ITM · 2026-2**. Tarea: [`tareas/tarea3.md`](tareas/tarea3.md) (LeetCode: provincias y pensum).
 
 ---
 
@@ -77,7 +77,7 @@ El tamaño de la instancia se reporta con dos números: **`n = |V|`** y **`m = |
 
 **Grado** `d(v)`: cuántas aristas tocan a `v` (en dirigidos: grado de entrada y de salida). Lema del apretón de manos: la suma de grados es `2m`. Por eso el número de vértices de grado impar es siempre par —el mismo hecho que usó Euler.
 
-### Palabras que se usan todo el semestre
+### Palabras usadas
 
 - **Camino** — secuencia de vértices donde cada paso consecutivo es una arista. **Simple** si no repite vértices.
 - **Ciclo** — camino que vuelve al inicio.
@@ -216,13 +216,6 @@ función componentes(G):
 
 Cada llamada a `explorar` cubre **exactamente un grupo**. El `para cada v` no recorre de más: los ya marcados se saltan. Complejidad `Θ(n + m)`.
 
----
-
-## 6. Ejercicios explicados paso a paso
-
-Tres instancias chicas, para pizarrón. La respuesta va con la traza; no basta el número final.
-
----
 
 ### Ejercicio 1 · ¿Cuántos grupos de amigos hay?
 
@@ -319,37 +312,73 @@ Componente 3 = `{Gina}`. Un grupo de tamaño 1 no es un error del algoritmo: es 
 
 ---
 
-### Ejercicio 2 · Grados de separación (BFS)
+### Ejercicio 2 · ¿A cuántas amistades está cada quien de Ana? (BFS)
 
-**Enunciado.** Sobre la **misma** red, Ana quiere saber a cuántos saltos está cada quien: 0 ella, 1 sus amigos, 2 los amigos de amigos, y así. Si no hay cadena, la distancia es infinita.
+El ejercicio 1 preguntaba **quiénes viven en el mismo grupo**. Este pregunta otra cosa, sobre **el mismo dibujo**: no basta «Elena está en el grupo de Ana»; Ana quiere saber **cuántas amistades hay que cruzar** para llegar a Elena (o a Hugo, o a Diego).
 
-**Algoritmo.** BFS desde Ana. La cola garantiza que la primera vez que se visita a alguien es por un **camino más corto en número de amistades**.
+**Enunciado.** Misma red del ejercicio 1 (ocho personas, cinco amistades). Ana es el origen. Un **salto** es una amistad: si X es amigo de Y, hay 1 salto entre ellos. Si X es amigo de Y y Y es amigo de Z, pero X y Z no se conocen, hay **2 saltos** (X → Y → Z). Hay que escribir, para cada persona, ese número **mínimo**. Si desde Ana no existe ninguna cadena de amistades hasta esa persona, la distancia es **infinita** (no se puede llegar).
 
-| Paso | Cola al inicio del paso | Atiende | Distancia | Encola |
+**Qué se pide.** Una etiqueta de distancia para cada uno, no un solo número.
+
+**Intuición, sin algoritmo.** Cuente las líneas del dibujo desde Ana, siempre por el camino **más corto** (menos amistades):
+
+```text
+              2 saltos
+                 Hugo
+                  |
+                 Bruno          ← 1 salto (amigo de Ana)
+                  |
+    Elena — Carla — Ana         ← Ana vale 0 (ella misma)
+    2 saltos  1 salto
+
+
+    Diego — Felipe              ← ninguna línea llega hasta Ana → ∞
+
+    Gina                        ← nadie la conecta → ∞
+```
+
+Tres olas, como cuando tira una piedra al agua:
+
+| Ola | Pregunta en castellano | Personas | Distancia |
+| --- | --- | --- | --- |
+| 0 | ¿Quién es Ana? | Ana | 0 |
+| 1 | ¿A quién conoce Ana **en persona**? | Bruno, Carla | 1 |
+| 2 | ¿A quién conocen Bruno o Carla, que Ana **aún no** haya contado? | Hugo (lo presenta Bruno), Elena (la presenta Carla) | 2 |
+| — | ¿Queda alguien a quien no se llegó? | Diego, Felipe, Gina | ∞ |
+
+Hugo no es amigo de Ana: no hay línea `Ana — Hugo`. Pero Bruno sí es amigo de los dos, así que Ana llega a Hugo en **2** saltos (`Ana → Bruno → Hugo`). Elena igual: `Ana → Carla → Elena`. Diego tiene un amigo (Felipe), pero ese dúo **no toca** el grupo de Ana: no hay cadena, da igual cuántos saltos se permitan.
+
+Eso es lo que LinkedIn llama contactos de 1.º y 2.º grado. El ejercicio 1 solo decía «mismo grupo / otro grupo». Este pone el **número**.
+
+**Algoritmo.** Para no saltarse una ola ni contar dos veces a la misma persona, se usa **BFS** (recorrido en anchura). Idea: una **cola** (fila del banco: el primero que llegó se atiende primero). Ana entra primero. Cada vez que se atiende a alguien, se meten al final de la fila **solo sus amigos todavía no vistos**, con distancia = la de esa persona + 1. Así se terminan los de distancia 1 antes de pasar a los de distancia 2.
+
+Marca de «ya lo vi» para no encolar a Ana otra vez cuando Bruno diga «mi amiga Ana».
+
+| Paso | Fila (el de adelante se atiende) | Atiende | Distancia que le pone | Amigos nuevos que mete a la fila |
 | --- | --- | --- | --- | --- |
-| 1 | Ana | Ana | 0 (origen) | Bruno, Carla |
-| 2 | Bruno, Carla | Bruno | 1 | Hugo |
-| 3 | Carla, Hugo | Carla | 1 | Elena |
-| 4 | Hugo, Elena | Hugo | 2 | — |
-| 5 | Elena | Elena | 2 | — |
-| 6 | vacía | fin | | |
+| 1 | Ana | Ana | 0 | Bruno, Carla |
+| 2 | Bruno, Carla | Bruno | 1 | Hugo (Ana ya estaba vista) |
+| 3 | Carla, Hugo | Carla | 1 | Elena (Ana ya estaba vista) |
+| 4 | Hugo, Elena | Hugo | 2 | nadie nuevo |
+| 5 | Elena | Elena | 2 | nadie nuevo |
+| 6 | (vacía) | se acaba | | |
 
-Diego, Felipe y Gina nunca entran a la cola: no son alcanzables desde Ana.
+Diego, Felipe y Gina **nunca** entran a la fila: desde Ana no hay arista que lleve hacia ellos.
 
 **Respuesta.**
 
-| Persona | Saltos desde Ana | Lectura |
+| Persona | Saltos desde Ana | En una frase |
 | --- | --- | --- |
-| Ana | 0 | ella |
-| Bruno, Carla | 1 | amigos |
+| Ana | 0 | es el origen |
+| Bruno, Carla | 1 | amigos directos |
 | Hugo, Elena | 2 | amigos de amigos |
-| Diego, Felipe, Gina | ∞ | otro grupo (o sin grupo) |
+| Diego, Felipe, Gina | ∞ | no hay camino; son los otros grupos del ejercicio 1 |
 
-Por eso el ejercicio 1 y este son primos: BFS **dentro de una componente** da distancias; las personas a distancia ∞ son exactamente las otras componentes.
+Comprobación: «¿Elena es amiga de una amiga de Ana?» Sí, `dist = 2`. «¿Y Diego?» No: Diego tiene amigos, pero no en el círculo de Ana.
 
-Si la pregunta fuera «¿Elena es amiga de amiga de Ana?» la respuesta es sí (`dist = 2`). «¿Y Diego?» no, aunque Diego tenga amigos.
+**Relación con el ejercicio 1.** Quienes tienen distancia finita son **exactamente** la componente de Ana. Quienes tienen `∞` son las otras componentes. BFS, además del grupo, entrega **cuán lejos** está cada uno **en número de aristas**.
 
-Complejidad otra vez `Θ(n + m)`. Aquí BFS no sustituye a Dijkstra: no hay pesos distintos de 1.
+**Complejidad.** `Θ(n + m)`: cada persona se encola a lo sumo una vez y cada amistad se mira un número constante de veces. Aquí todas las amistades «pesan» 1, así que BFS **es** el camino más corto. Dijkstra haría falta solo si cada arista tuviera un costo distinto (minutos de bus, por ejemplo).
 
 ---
 
