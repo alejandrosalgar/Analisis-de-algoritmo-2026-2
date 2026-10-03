@@ -24,7 +24,7 @@ Resolver **los cinco** ejercicios de abajo, cada uno con la familia que se pide.
 
 1. Implementar la solución en [LeetCode](https://leetcode.com/) (el lenguaje es libre: Python, Java, C++, JavaScript, TypeScript, etc.).
 2. Hacer **Submit** hasta obtener **Accepted** (éxito: todos los casos de prueba pasan).
-3. Subir al **repositorio individual** el código y las **imágenes** que demuestren el accepted y el nombre de la cuenta de leetcode.
+3. Subir al **repositorio individual** las **imágenes** que demuestren el accepted, el nombre de la cuenta de leetcode, con el ejercicio y parte del codigo.
 
 **No cuenta** como solución del curso un `.sort()` de librería donde se pidió el algoritmo, un greedy donde hace falta la tabla, una recursión **sin** retractarse donde se pidió backtracking, ni pegar código de Internet que no pueda explicar. En el README de la entrega tiene que verse la familia, la idea y la cota.
 
